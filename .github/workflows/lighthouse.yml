@@ -1,0 +1,52 @@
+name: lighthouse
+
+on:
+  workflow_dispatch:        # gives you a "Run workflow" button
+    inputs:
+      url:
+        description: Target URL
+        default: https://johndavidportfolio.netlify.app
+      device:
+        description: mobile or desktop
+        default: mobile
+  schedule:
+    - cron: "0 3 * * *"     # daily, 03:00 UTC (delete these 2 lines while testing if you like)
+
+jobs:
+  perf:
+    runs-on: ubuntu-latest
+    env:
+      PERF_URL: ${{ inputs.url || 'https://johndavidportfolio.netlify.app' }}
+      PERF_DEVICE: ${{ inputs.device || 'mobile' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install --no-audit --no-fund
+
+      - name: Restore history
+        uses: actions/cache/restore@v4
+        with:
+          path: perf-results
+          key: perf-history-${{ github.run_id }}
+          restore-keys: perf-history-
+
+      - name: Run Lighthouse
+        run: node src/perf.mjs --runs 3 --fail-on never
+
+      - name: Save history
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: perf-results
+          key: perf-history-${{ github.run_id }}
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: perf-results
