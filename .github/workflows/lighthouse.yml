@@ -10,7 +10,7 @@ on:
         description: mobile or desktop
         default: mobile
   schedule:
-      - cron: "10 12 * * *"     # 17:30 IST daily
+      - cron: "15 12 * * *"     # 17:30 IST daily
 
 jobs:
   perf:
