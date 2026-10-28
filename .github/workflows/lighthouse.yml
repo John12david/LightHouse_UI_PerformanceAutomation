@@ -1,7 +1,7 @@
 name: lighthouse
 
 on:
-  workflow_dispatch:        # gives you a "Run workflow" button
+  workflow_dispatch:
     inputs:
       url:
         description: Target URL
@@ -10,7 +10,7 @@ on:
         description: mobile or desktop
         default: mobile
   schedule:
-    - cron: "0 3 * * *"     # daily, 03:00 UTC (delete these 2 lines while testing if you like)
+      - cron: "0 12 * * *"     # 17:30 IST daily
 
 jobs:
   perf:
@@ -35,7 +35,7 @@ jobs:
           restore-keys: perf-history-
 
       - name: Run Lighthouse
-        run: node src/perf.mjs --runs 3 --fail-on never
+        run: node src/perf.mjs --runs 3 --thresholds thresholds.example.json --fail-on fail
 
       - name: Save history
         if: always()
@@ -50,3 +50,22 @@ jobs:
         with:
           name: lighthouse-report
           path: perf-results
+
+      - name: Read verdict
+        if: always() && hashFiles('perf-results/reports/latest-summary.md') != ''
+        run: echo "VERDICT=$(head -1 perf-results/reports/latest-summary.md | sed 's/## Lighthouse: //')" >> "$GITHUB_ENV"
+
+      - name: Email report
+        if: always() && hashFiles('perf-results/reports/latest.html') != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          to: ${{ secrets.MAIL_TO }}
+          from: Lighthouse Monitor <${{ secrets.MAIL_USERNAME }}>
+          subject: "Lighthouse ${{ env.VERDICT }} - ${{ env.PERF_URL }} - ${{ github.run_number }}"
+          body: file://perf-results/reports/latest-summary.md
+          attachments: perf-results/reports/latest.html
