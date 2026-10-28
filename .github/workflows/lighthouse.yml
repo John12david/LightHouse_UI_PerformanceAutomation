@@ -10,7 +10,7 @@ on:
         description: mobile or desktop
         default: mobile
   schedule:
-      - cron: "0 12 * * *"     # 17:30 IST daily
+      - cron: "10 12 * * *"     # 17:30 IST daily
 
 jobs:
   perf:
@@ -53,8 +53,9 @@ jobs:
 
       - name: Read verdict
         if: always() && hashFiles('perf-results/reports/latest-summary.md') != ''
-        run: echo "VERDICT=$(head -1 perf-results/reports/latest-summary.md | sed 's/## Lighthouse: //')" >> "$GITHUB_ENV"
-
+        run: |
+          echo "VERDICT=$(head -1 perf-results/reports/latest-summary.md | sed 's/## Lighthouse: //')" >> "$GITHUB_ENV"
+          
       - name: Email report
         if: always() && hashFiles('perf-results/reports/latest.html') != ''
         uses: dawidd6/action-send-mail@v3
