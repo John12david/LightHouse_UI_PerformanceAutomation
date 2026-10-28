@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-lighthouse-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lightweight Lighthouse runner with history, baseline comparison, thresholds and a self-contained HTML report",
+  "type": "module",
+  "engines": { "node": ">=18.20" },
+  "scripts": {
+    "perf": "node src/perf.mjs",
+    "perf:desktop": "node src/perf.mjs --device desktop",
+    "perf:list": "node src/perf.mjs --list"
+  },
+  "dependencies": {
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.6.0"
+  }
+}

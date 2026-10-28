@@ -1,0 +1,15 @@
+{
+  "performance":   { "warn": 90,   "fail": 70 },
+  "accessibility": { "warn": 95,   "fail": 85 },
+  "bestPractices": { "warn": 95,   "fail": 85 },
+  "seo":           { "warn": 95,   "fail": 85 },
+  "lcp":           { "warn": 2000, "fail": 3000 },
+  "fcp":           { "warn": 1500, "fail": 2500 },
+  "cls":           { "warn": 0.05, "fail": 0.1 },
+  "tbt":           { "warn": 150,  "fail": 400 },
+  "speedIndex":    { "warn": 3000, "fail": 5000 },
+  "ttfb":          { "warn": 600,  "fail": 1200 },
+  "pageWeightKB":  { "warn": 1500, "fail": 3000 },
+  "requests":      { "warn": 60,   "fail": 120 },
+  "regression":    { "noisePct": 5, "warnPct": 10, "failPct": 25 }
+}
