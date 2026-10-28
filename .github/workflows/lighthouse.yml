@@ -10,7 +10,7 @@ on:
         description: mobile or desktop
         default: mobile
   schedule:
-      - cron: "58 12 * * *"
+      - cron: "10 13 * * *"
 
 jobs:
   perf:
